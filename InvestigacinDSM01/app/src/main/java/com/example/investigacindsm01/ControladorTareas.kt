@@ -9,6 +9,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 
+// Clase para las tareas y su estado
 data class Task(val description: String, var isCompleted: Boolean)
 
 class ControladorTareas(context: Context, private val tasks: List<Task>) :
@@ -16,10 +17,10 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val task = getItem(position)
-        //Layout de la lista de tareas
+        // Layout de la lista de tareas
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.lista_tareas, parent, false)
 
-        //Checkbox
+        // Checkbox
         val checkBoxTask = view.findViewById<CheckBox>(R.id.checkBoxTask)
         val textViewTask = view.findViewById<TextView>(R.id.textViewTask)
 
@@ -29,13 +30,14 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
 
             checkBoxTask.setOnCheckedChangeListener { _, isChecked ->
                 it.isCompleted = isChecked
+                // Marca si esta completa o no
                 if (isChecked) {
                     textViewTask.paintFlags = textViewTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-                    Toast.makeText(context, "Tarea Completada: ${it.description}", Toast.LENGTH_SHORT).show()
                 } else {
                     textViewTask.paintFlags = textViewTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
             }
+            
         }
 
         return view
