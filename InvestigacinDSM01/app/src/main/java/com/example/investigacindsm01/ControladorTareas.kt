@@ -17,10 +17,8 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val task = getItem(position)
-        // Layout de la lista de tareas
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.lista_tareas, parent, false)
 
-        // Checkbox
         val checkBoxTask = view.findViewById<CheckBox>(R.id.checkBoxTask)
         val textViewTask = view.findViewById<TextView>(R.id.textViewTask)
 
@@ -28,16 +26,25 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
             textViewTask.text = it.description
             checkBoxTask.isChecked = it.isCompleted
 
+            // Actualiza el texto con o sin línea de tachado
+            textViewTask.paintFlags = if (it.isCompleted) {
+                textViewTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                textViewTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+
             checkBoxTask.setOnCheckedChangeListener { _, isChecked ->
                 it.isCompleted = isChecked
-                // Marca si esta completa o no
-                if (isChecked) {
-                    textViewTask.paintFlags = textViewTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                // Actualiza el texto con o sin línea de tachado
+                textViewTask.paintFlags = if (isChecked) {
+                    textViewTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                 } else {
-                    textViewTask.paintFlags = textViewTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                    textViewTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
+
+                // Llama a la función para guardar las tareas
+                (context as MainActivity).guardarTareas()
             }
-            
         }
 
         return view
