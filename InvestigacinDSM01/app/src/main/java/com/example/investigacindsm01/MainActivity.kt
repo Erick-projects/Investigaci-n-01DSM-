@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextTask: EditText
     private lateinit var buttonAddTask: Button
     private lateinit var listViewTasks: ListView
-    private val tasks = mutableListOf<String>()
-    private lateinit var taskAdapter: ArrayAdapter<String>
+    private val tasks = mutableListOf<Task>()
+    private lateinit var taskAdapter: ControladorTareas
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,29 +24,22 @@ class MainActivity : AppCompatActivity() {
         buttonAddTask = findViewById(R.id.buttonAddTask)
         listViewTasks = findViewById(R.id.listViewTasks)
 
-        taskAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, tasks)
+        taskAdapter = ControladorTareas(this, tasks)
         listViewTasks.adapter = taskAdapter
 
         buttonAddTask.setOnClickListener {
             val taskText = editTextTask.text.toString().trim()
             if (taskText.isNotEmpty()) {
-                tasks.add(taskText)
+                val nuevaTarea = Task(taskText, false)
+                tasks.add(nuevaTarea)
                 taskAdapter.notifyDataSetChanged()
                 editTextTask.text.clear()
-                Toast.makeText(this, "Task added: $taskText", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Tarea Agregada: $taskText", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Please enter a task", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, ingresa una tarea", Toast.LENGTH_SHORT).show()
             }
         }
 
 
-        fun addTask() {
-            val taskText = editTextTask.text.toString().trim()
-            if (taskText.isNotEmpty()) {
-                tasks.add(taskText)
-                taskAdapter.notifyDataSetChanged()
-                editTextTask.text.clear()
-            }
-        }
     }
 }
