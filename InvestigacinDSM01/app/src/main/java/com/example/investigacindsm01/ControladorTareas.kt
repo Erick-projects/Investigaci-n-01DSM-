@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 
 // Clase para las tareas y su estado
 data class Task(val description: String, var isCompleted: Boolean)
 
-class ControladorTareas(context: Context, private val tasks: List<Task>) :
+class ControladorTareas(context: Context, private val tasks: MutableList<Task>) :
     ArrayAdapter<Task>(context, 0, tasks) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -21,6 +22,7 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
 
         val checkBoxTask = view.findViewById<CheckBox>(R.id.checkBoxTask)
         val textViewTask = view.findViewById<TextView>(R.id.textViewTask)
+        val botonEliminarTareas = view.findViewById<Button>(R.id.buttonDeleteTask)
 
         task?.let {
             textViewTask.text = it.description
@@ -44,6 +46,13 @@ class ControladorTareas(context: Context, private val tasks: List<Task>) :
 
                 // Llama a la función para guardar las tareas
                 (context as MainActivity).guardarTareas()
+            }
+
+            botonEliminarTareas.setOnClickListener {
+                tasks.removeAt(position)
+                notifyDataSetChanged()
+                (context as MainActivity).guardarTareas()
+                Toast.makeText(context.applicationContext, "Tarea Eliminada", Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -17,8 +17,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextTask: EditText
     private lateinit var buttonAddTask: Button
     private lateinit var listViewTasks: ListView
+    private lateinit var textoBuscar: EditText
+    private lateinit var botonBuscar: Button
+    private lateinit var botonMostrarTodas: Button
     private val tasks = mutableListOf<Task>()
-    private lateinit var taskAdapter: ControladorTareas
+    private val tareasEncontradas = mutableListOf<Task>()
+    private lateinit var controladorTareas: ControladorTareas
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,25 +32,40 @@ class MainActivity : AppCompatActivity() {
         editTextTask = findViewById(R.id.editTextTask)
         buttonAddTask = findViewById(R.id.buttonAddTask)
         listViewTasks = findViewById(R.id.listViewTasks)
+        textoBuscar = findViewById(R.id.editTextSearch)
+        botonBuscar = findViewById(R.id.buttonSearchTask)
+        botonMostrarTodas = findViewById(R.id.buttonShowAllTasks)
         sharedPreferences = getSharedPreferences("TaskPrefs", Context.MODE_PRIVATE)
 
         cargarTareas()
 
-        taskAdapter = ControladorTareas(this, tasks)
-        listViewTasks.adapter = taskAdapter
+        controladorTareas = ControladorTareas(this, tasks)
+        listViewTasks.adapter = controladorTareas
 
         buttonAddTask.setOnClickListener {
             val taskText = editTextTask.text.toString().trim()
             if (taskText.isNotEmpty()) {
                 val nuevaTarea = Task(taskText, false)
                 tasks.add(nuevaTarea)
-                taskAdapter.notifyDataSetChanged()
+                controladorTareas.notifyDataSetChanged()
                 editTextTask.text.clear()
                 guardarTareas()
                 Toast.makeText(this, "Tarea Agregada: $taskText", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Por favor, ingresa una tarea", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        botonBuscar.setOnClickListener {
+            val tarea = textoBuscar.text.toString().trim()
+            if (tarea.isNotEmpty()) {
+                buscarTareas(tarea)
+            } else {
+                Toast.makeText(this, "Por favor, ingresa un texto de búsqueda", Toast.LENGTH_SHORT).show()
+            }
+        }
+        botonMostrarTodas.setOnClickListener {
+            mostrarTodasLasTareas()
         }
     }
 
@@ -69,5 +88,26 @@ class MainActivity : AppCompatActivity() {
             tasks.clear()
             tasks.addAll(gson.fromJson(json, type))
         }
+    }
+
+    // Buscar tareas
+    fun buscarTareas(query: String) {
+        tareasEncontradas.clear()
+        for (task in tasks) {
+            if (task.description.contains(query, ignoreCase = true)) {
+                tareasEncontradas.add(task)
+            }
+        }
+        if (tareasEncontradas.isEmpty()) {
+            Toast.makeText(this, "No se encontraron tareas", Toast.LENGTH_SHORT).show()
+        } else {
+            val listaTareasEncontradas = ControladorTareas(this, tareasEncontradas)
+            listViewTasks.adapter = listaTareasEncontradas
+        }
+    }
+
+    // Mostrar todas las tareas
+    fun mostrarTodasLasTareas() {
+        listViewTasks.adapter = controladorTareas
     }
 }
