@@ -24,7 +24,7 @@
         android:id="@+id/buttonEditTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Editar"
+        android:text="✏️"
         android:layout_toStartOf="@id/buttonDeleteTask"
         android:layout_centerVertical="true"
         android:paddingStart="8dp"

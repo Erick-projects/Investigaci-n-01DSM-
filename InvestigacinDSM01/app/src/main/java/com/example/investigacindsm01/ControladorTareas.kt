@@ -46,10 +46,10 @@ class ControladorTareas(context: Context, private val tasks: MutableList<Task>) 
                 } else {
                     textViewTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
-
                 // Llama a la función para guardar las tareas
                 (context as MainActivity).guardarTareas()
             }
+
 
             botonEliminarTareas.setOnClickListener {
                 tasks.removeAt(position)
@@ -64,6 +64,7 @@ class ControladorTareas(context: Context, private val tasks: MutableList<Task>) 
 
         return view
     }
+
     private fun mostrarDialogoEdicion(task: Task, position: Int) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Editar Tarea")
@@ -85,4 +86,4 @@ class ControladorTareas(context: Context, private val tasks: MutableList<Task>) 
 
         builder.show()
     }
-    }
+}

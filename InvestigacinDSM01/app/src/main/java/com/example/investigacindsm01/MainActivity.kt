@@ -37,8 +37,10 @@ class MainActivity : AppCompatActivity() {
         botonMostrarTodas = findViewById(R.id.buttonShowAllTasks)
         sharedPreferences = getSharedPreferences("TaskPrefs", Context.MODE_PRIVATE)
 
+        // Cargar tareas almacenadas
         cargarTareas()
 
+        // Inicializar el controlador de tareas
         controladorTareas = ControladorTareas(this, tasks)
         listViewTasks.adapter = controladorTareas
 
